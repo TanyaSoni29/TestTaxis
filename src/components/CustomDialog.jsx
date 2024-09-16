@@ -12,7 +12,11 @@ import { addDataFromSchedulerInEditMode } from '../context/bookingSlice';
 import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
-import { setActiveSearchResultClicked } from '../context/schedulerSlice';
+import {
+	deleteSchedulerBooking,
+	setActiveSearchResultClicked,
+} from '../context/schedulerSlice';
+import { useAuth } from '../hooks/useAuth';
 function CustomDialog({ closeDialog }) {
 	const [allocateModal, setAllocateModal] = useState(false);
 	const [isCompleteBookingModal, setIsCompleteBookingModal] = useState(false);
@@ -26,11 +30,24 @@ function CustomDialog({ closeDialog }) {
 		activeSearch,
 		activeSearchResult,
 	} = useSelector((state) => state.scheduler);
+	const user = useAuth();
 	let data = {};
 	data = bookings[index];
 	if (activeSearch) data = activeSearchResult;
 
 	if (!data?.bookingId) return null;
+
+	const handleCancelOnArrival = () => {
+		dispatch(
+			deleteSchedulerBooking(
+				false,
+				user.currentUser.fullName,
+				user.currentUser.id,
+				true
+			)
+		);
+		closeDialog();
+	};
 
 	return (
 		<div className='fixed left-[-35vw] inset-0 w-[70vw] mx-auto z-50 flex items-center justify-center p-4 bg-background bg-opacity-50'>
@@ -285,7 +302,7 @@ function CustomDialog({ closeDialog }) {
 
 					<BookingButton
 						text='Allocate Booking'
-						color='blue'
+						color='bg-blue-700'
 						onClick={() => setAllocateModal(true)}
 					/>
 					<BookingButton
@@ -302,25 +319,32 @@ function CustomDialog({ closeDialog }) {
 							}
 						}}
 						text='Edit Booking'
-						color='blue'
+						color='bg-blue-700'
 					/>
 					<BookingButton
 						text='Duplicate Booking'
-						color='blue'
+						color='bg-blue-700'
 						onClick={() => setDuplicateBookingModal(true)}
 					/>
 					<BookingButton
 						text='Driver Arrived'
-						color='blue'
+						color='bg-blue-700'
 					/>
 					<BookingButton
 						text='Complete Booking'
-						color='green'
+						color='bg-green-700'
 						onClick={() => setIsCompleteBookingModal(true)}
 					/>
+					{data.scope === 1 && user.currentUser?.isAdmin && (
+						<BookingButton
+							text='Cancel On Arrival'
+							color='bg-orange-700'
+							onClick={handleCancelOnArrival}
+						/>
+					)}
 					<BookingButton
 						text='Cancel Booking'
-						color='red'
+						color='bg-red-700'
 						onClick={() => setDeleteModal(true)}
 					/>
 				</div>
@@ -407,7 +431,7 @@ const BookingButton = ({ text, color, ...props }) => {
 	return (
 		<button
 			{...props}
-			className={`px-3 py-2 text-white bg-${color}-700 hover:bg-opacity-80 rounded-lg`}
+			className={`px-3 py-2 text-white ${color} hover:bg-opacity-80 rounded-lg`}
 		>
 			{text}
 		</button>

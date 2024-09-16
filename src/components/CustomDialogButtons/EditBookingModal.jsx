@@ -16,15 +16,18 @@ function EditBookingModal({ setEditBookingModal, closeDialog }) {
 	data = bookings[index];
 	if (activeSearch) data = activeSearchResult;
 	function handleEditOne() {
-		const filterData = { ...data, recurrenceID: '', recurrenceRule: '' };
-		console.log(`Edit Single Bookings`);
+		const filterData = {
+			...data,
+			recurrenceID: '',
+			recurrenceRule: '',
+		};
 		dispatch(addDataFromSchedulerInEditMode(filterData));
 		closeDialog(false);
 		setEditBookingModal(false);
 	}
 	function handleEditAll() {
-		console.log(`Edit All Bookings`);
-		dispatch(addDataFromSchedulerInEditMode(data));
+		console.log('Handle edit all booking Data', data);
+		dispatch(addDataFromSchedulerInEditMode({ ...data }));
 		closeDialog(false);
 		setEditBookingModal(false);
 	}

@@ -4,6 +4,7 @@ import { Switch, TextField } from '@mui/material';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import { useEffect, useState, Fragment, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { isValidDate } from '../utils/isValidDate';
 
 // Context And Hooks imports for data flow and management
 import {
@@ -65,6 +66,7 @@ function Booking({ bookingData, id, onBookingUpload }) {
 	// Submit the form data to the Puser Component
 	async function handleSubmit(e) {
 		e.preventDefault();
+
 		if (bookingData.returnDateTime) {
 			const pickup = new Date(bookingData.pickupDateTime).getTime();
 			const returnTime = new Date(bookingData.returnDateTime).getTime();
@@ -76,6 +78,25 @@ function Booking({ bookingData, id, onBookingUpload }) {
 				return;
 			}
 		}
+
+		// const { hours, minutes } = bookingData;
+		const hours = Number(bookingData.hours);
+		const minutes = Number(bookingData.minutes);
+
+		if (
+			hours < 0 ||
+			hours > 100 ||
+			isNaN(hours) ||
+			minutes < 0 ||
+			minutes > 59 ||
+			isNaN(minutes)
+		) {
+			dispatch(openSnackbar('Invalid duration range', 'error'));
+			return;
+		}
+
+		updateData('durationMinutes', hours * 60 + minutes);
+
 		setFormSubmitLoading(true);
 		await onBookingUpload(id);
 		setFormSubmitLoading(false);
@@ -149,6 +170,11 @@ function Booking({ bookingData, id, onBookingUpload }) {
 			ref.current.focus();
 			ref.current.select();
 		}
+	}
+
+	function handleClick(event, ref) {
+		ref.current.focus();
+		ref.current.select();
 	}
 
 	// auto calculate the quotes based on Pickup and destination
@@ -289,6 +315,24 @@ function Booking({ bookingData, id, onBookingUpload }) {
 		}
 	}, [bookingData.formBusy, bookingData.pickupDateTime, dispatch]);
 
+	useEffect(() => {
+		if (bookingData.formBusy) return;
+		dispatch(
+			updateValueSilentMode(
+				id,
+				'hours',
+				Math.floor(bookingData.durationMinutes / 60)
+			)
+		);
+		dispatch(
+			updateValueSilentMode(
+				id,
+				'minutes',
+				Math.floor(bookingData.durationMinutes % 60)
+			)
+		);
+	}, [bookingData.durationMinutes, id, dispatch, bookingData.formBusy]);
+
 	function convertToOneHourLaterFromPickUp() {
 		const pickupDateTime = new Date(bookingData.pickupDateTime);
 		const oneHourLater = new Date(
@@ -298,8 +342,6 @@ function Booking({ bookingData, id, onBookingUpload }) {
 	}
 
 	if (!bookingData) return null;
-
-	console.log('bookingData', bookingData);
 
 	return (
 		<div className='bg-background text-foreground p-3 m-auto'>
@@ -351,8 +393,15 @@ function Booking({ bookingData, id, onBookingUpload }) {
 								required
 								type='datetime-local'
 								className='w-full bg-input text-foreground p-2 rounded-lg border border-border'
-								value={formatDate(bookingData.pickupDateTime)}
+								value={bookingData.pickupDateTime}
+								onKeyDown={(e) => {
+									if (e.key === 'Enter') {
+										pickupRef.current.focus();
+										pickupRef.current.select();
+									}
+								}}
 								onChange={(e) => {
+									if (!isValidDate(e.target.value)) return;
 									updateData('pickupDateTime', e.target.value);
 									return e.target.value;
 								}}
@@ -407,9 +456,18 @@ function Booking({ bookingData, id, onBookingUpload }) {
 							placeholder='Pickup Address'
 							value={bookingData.pickupAddress}
 							onPushChange={handleAddPickup}
-							onChange={(e) => updateData('pickupAddress', e.target.value)}
+							onChange={(e) => {
+								const addressValue = e.target.value;
+								updateData('pickupAddress', addressValue);
+
+								// Clear pickupPostCode if pickupAddress is empty
+								if (!addressValue) {
+									updateData('pickupPostCode', '');
+								}
+							}}
 							inputRef={pickupRef}
 							handleChangeRef={(e) => handleChangeFocus(e, destinationRef)}
+							handleClickRef={(e) => handleClick(e, pickupRef)}
 						/>
 						<Autocomplete
 							type='postal'
@@ -449,9 +507,17 @@ function Booking({ bookingData, id, onBookingUpload }) {
 							placeholder='Destination Address'
 							value={bookingData.destinationAddress}
 							onPushChange={handleAddDestination}
-							onChange={(e) => updateData('destinationAddress', e.target.value)}
+							onChange={(e) => {
+								const addressValue = e.target.value;
+								updateData('destinationAddress', addressValue);
+
+								if (!addressValue) {
+									updateData('destinationPostCode', '');
+								}
+							}}
 							inputRef={destinationRef}
 							handleChangeRef={(e) => handleChangeFocus(e, userNameRef)}
+							handleClickRef={(e) => handleClick(e, destinationRef)}
 						/>
 						<Autocomplete
 							required={false}
@@ -518,7 +584,7 @@ function Booking({ bookingData, id, onBookingUpload }) {
 							<select
 								value={bookingData.passengers}
 								onChange={(e) => updateData('passengers', e.target.value)}
-								className='w-[30%] bg-input text-foreground p-2 rounded-lg border border-border'
+								className='min-w-[45%] bg-input text-foreground p-2 rounded-lg border border-border'
 							>
 								<option value={1}>1</option>
 								<option value={2}>2</option>
@@ -582,51 +648,15 @@ function Booking({ bookingData, id, onBookingUpload }) {
 								placeholder='Hours'
 								required
 								className='w-full bg-input text-foreground p-2 rounded-lg border border-border'
-								value={bookingData.hours === null ? '' : bookingData.hours}
-								onChange={(e) => {
-									const value = e.target.value;
-									if (value === '') {
-										updateData('hours', null); // Set hours to null when the input is empty
-										updateData('durationText', String(bookingData.minutes)); // Adjust durationText accordingly
-									} else {
-										const intValue = parseInt(value, 10);
-										if (!isNaN(intValue) && intValue >= 0 && intValue <= 99) {
-											updateData('hours', intValue);
-											updateData(
-												'durationText',
-												String(intValue * 60 + bookingData.minutes)
-											);
-										}
-									}
-								}}
+								value={bookingData.hours}
+								onChange={(e) => updateData('hours', e.target.value)}
 							/>
 							<Input
 								type='number'
 								required
 								placeholder='Minutes'
-								value={bookingData.minutes === null ? '' : bookingData.minutes}
-								onChange={(e) => {
-									const value = e.target.value;
-									if (value === '') {
-										updateData('minutes', null); // Set minutes to null when the input is empty
-										updateData('durationText', String(bookingData.hours * 60)); // Adjust durationText accordingly
-									} else {
-										const intValue = parseInt(value, 10);
-										if (!isNaN(intValue) && intValue >= 0 && intValue <= 59) {
-											updateData('minutes', intValue);
-											updateData(
-												'durationText',
-												String(bookingData.hours * 60 + intValue)
-											);
-										} else {
-											// If the input is invalid or out of range, keep the minutes unchanged but clamp the value between 0 and 59
-											updateData(
-												'minutes',
-												Math.min(59, Math.max(0, intValue))
-											);
-										}
-									}
-								}}
+								value={bookingData.minutes}
+								onChange={(e) => updateData('minutes', e.target.value)}
 							/>
 						</div>
 					</div>

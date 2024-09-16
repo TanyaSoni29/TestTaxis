@@ -34,8 +34,9 @@ function filterData(data) {
 	return JSON.stringify({
 		details: data.details,
 		email: data.email,
-		durationText: data.durationText ? data.durationText + '' : '0',
-		durationMinutes: data.durationText ? +data.durationText : 0,
+		durationText: Number(data.durationText) ? String(data.durationText) : '0',
+		// durationMinutes: data.durationText ? +data.durationText : 0,
+		durationMinutes: data.durationMinutes || 0,
 		isAllDay: data.isAllDay,
 		passengerName: data.passengerName,
 		passengers: data.passengers,
@@ -139,6 +140,7 @@ async function handlePostReq(URL, data) {
 async function makeBooking(data, testMode = false) {
 	const URL = `${testMode ? TEST : BASE}/api/Bookings/Create`;
 	const filteredData = filterData(data);
+	console.log("filtered Data is coming",filteredData);
 	// const filteredData = data;
 	const res = await handlePostReq(URL, filteredData);
 	if (res.status === 'success')
@@ -259,7 +261,7 @@ async function deleteSchedulerBooking(data, testMode = true) {
 		cancelledByName: data.cancelledByName,
 		actionByUserId: data.actionByUserId,
 		cancelBlock: data.cancelBlock,
-		cancelledOnArrival: false,
+		cancelledOnArrival: data.cancelledOnArrival,
 	});
 	if (res.status === 'success')
 		sendLogs(

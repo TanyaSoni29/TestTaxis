@@ -9,7 +9,8 @@ const filterData = (data = {}) => ({
 	details: data.Details || '',
 	email: data.Email || '',
 	bookingId: data.Id || null,
-	durationText: data.DurationText || '20',
+	durationText: Number(data.durationText) ? String(data.durationText) : '20',
+	durationMinutes: data.durationMinutes || 0,
 	isAllDay: data.IsAllDay || false,
 	passengerName: data.PassengerName || '',
 	passengers: data.Passengers || 1,
@@ -30,12 +31,10 @@ const filterData = (data = {}) => ({
 	userId: data.UserId || null,
 	returnDateTime: data.ReturnDateTime || null,
 	vias: data.Vias || [],
-	accountNumber: data.AccountNumber || 0,
+	accountNumber: data.AccountNumber || 9999,
 	bookedByName: data.BookedByName || '',
 	returnBooking: data.ReturnBooking || false,
 	isReturn: data.IsReturn || false,
-	hours: data.Hours || 0,
-	minutes: data.Minutes || 20,
 	repeatBooking: data.RepeatBooking || false,
 	frequency: data.Frequency || 'none',
 	repeatEnd: data.RepeatEnd || 'never',
@@ -45,6 +44,8 @@ const filterData = (data = {}) => ({
 	isLoading: data.IsLoading || false,
 	bookingType: data.bookingType || 'New',
 	quoteOptions: null,
+	hours: data.Hours ?? 0,
+	minutes: data.Minutes ?? 20,
 });
 
 const initialState = {
@@ -78,15 +79,15 @@ const bookingFormSlice = createSlice({
 				: state.bookings.length - 1;
 		},
 		addDataFromSchedulerInEditMode(state, action) {
-			console.log(action.payload);
 			const data = filterData({});
 			data.bookingType = 'Current';
 			action.payload = {
 				...action.payload,
 				pickupDateTime: formatDate(action.payload.pickupDateTime),
 			};
+			console.log(action.payload);
 
-			state.bookings.push({ ...data, ...action.payload });
+			state.bookings.push({ ...data, ...action.payload});
 			state.activeBookingIndex = state.bookings.length - 1;
 		},
 		// to remove a booking session from the booking form data and from the UI

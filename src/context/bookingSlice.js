@@ -87,7 +87,7 @@ const bookingFormSlice = createSlice({
 			};
 			console.log(action.payload);
 
-			state.bookings.push({ ...data, ...action.payload});
+			state.bookings.push({ ...data, ...action.payload });
 			state.activeBookingIndex = state.bookings.length - 1;
 		},
 		// to remove a booking session from the booking form data and from the UI
@@ -181,6 +181,7 @@ export const onCreateBooking = (itemIndex) => async (dispatch, getState) => {
 export const onUpdateBooking = (itemIndex) => async (dispatch, getState) => {
 	const targetBooking = getState().bookingForm.bookings[itemIndex];
 	const activeTestMode = getState().bookingForm.isActiveTestMode;
+	console.log('targetBooking', targetBooking);
 	const response = await updateBooking(targetBooking, activeTestMode);
 	if (response.status === 'success') {
 		dispatch(endBooking({ itemIndex }));

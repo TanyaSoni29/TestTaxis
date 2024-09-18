@@ -18,8 +18,9 @@ function EditBookingModal({ setEditBookingModal, closeDialog }) {
 	function handleEditOne() {
 		const filterData = {
 			...data,
-			recurrenceID: '',
-			recurrenceRule: '',
+			// recurrenceID: '',
+			// recurrenceRule: '',
+			editBlock: false,
 		};
 		dispatch(addDataFromSchedulerInEditMode(filterData));
 		closeDialog(false);
@@ -27,7 +28,7 @@ function EditBookingModal({ setEditBookingModal, closeDialog }) {
 	}
 	function handleEditAll() {
 		console.log('Handle edit all booking Data', data);
-		dispatch(addDataFromSchedulerInEditMode({ ...data }));
+		dispatch(addDataFromSchedulerInEditMode({ editBlock: true, ...data }));
 		closeDialog(false);
 		setEditBookingModal(false);
 	}

@@ -49,7 +49,7 @@ function filterData(data) {
 		destinationAddress: data.destinationAddress,
 		destinationPostCode: data.destinationPostCode,
 		recurrenceRule: data.recurrenceRule || null,
-		recurrenceID: null,
+		recurrenceID: data.recurrenceID || null,
 		price: data.price,
 		priceAccount: data.priceAccount || 0,
 		chargeFromBase: data.chargeFromBase || false,
@@ -140,7 +140,7 @@ async function handlePostReq(URL, data) {
 async function makeBooking(data, testMode = false) {
 	const URL = `${testMode ? TEST : BASE}/api/Bookings/Create`;
 	const filteredData = filterData(data);
-	console.log("filtered Data is coming",filteredData);
+	console.log('filtered Data is coming', filteredData);
 	// const filteredData = data;
 	const res = await handlePostReq(URL, filteredData);
 	if (res.status === 'success')
@@ -238,7 +238,14 @@ async function getAccountList() {
 
 async function updateBooking(data, testMode = false) {
 	const URL = `${testMode ? TEST : BASE}/api/Bookings/Update`;
-	const filteredData = filterData(data);
+	let filteredData = JSON.parse(filterData(data));
+
+	// Include editBlock if present
+	if (data.editBlock) {
+		filteredData = { ...filteredData, editBlock: data.editBlock };
+	}
+
+	console.log(filteredData);
 	const res = await handlePostReq(URL, filteredData);
 	if (res.status === 'success')
 		sendLogs(

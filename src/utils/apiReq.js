@@ -325,7 +325,6 @@ async function getAddressSuggestions(location) {
 
 async function fireCallerEvent(number) {
 	const URL = `${BASE}/api/CallEvents/CallerLookup?caller_id=${number}`;
-	console.log(URL);
 	if (number.length < 10) return;
 	return await handleGetReq(URL);
 }

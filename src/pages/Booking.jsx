@@ -153,6 +153,7 @@ function Booking({ bookingData, id, onBookingUpload }) {
 	}
 
 	async function handleFireCallerEvent() {
+		console.log(bookingData.phoneNumber);
 		const data = await fireCallerEvent(bookingData.phoneNumber);
 		if (data.status === 'success') {
 			if (data.current.length || data.previous.length) {

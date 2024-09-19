@@ -93,6 +93,7 @@ function setHeaders() {
 // Event handlers
 async function handleGetReq(URL) {
 	try {
+		console.log(URL);
 		const response = await axios.get(URL, { headers: setHeaders() });
 		if (response.status >= 200 && response.status < 300) {
 			return { ...response.data, status: 'success' };
@@ -323,7 +324,8 @@ async function getAddressSuggestions(location) {
 }
 
 async function fireCallerEvent(number) {
-	const URL = `${TEST}/api/CallEvents/CallerLookup?caller_id=${number}`;
+	const URL = `${BASE}/api/CallEvents/CallerLookup?caller_id=${number}`;
+	console.log(URL);
 	if (number.length < 10) return;
 	return await handleGetReq(URL);
 }

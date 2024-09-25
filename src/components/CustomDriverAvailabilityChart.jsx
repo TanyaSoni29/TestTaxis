@@ -24,12 +24,22 @@ const WrapperDiv = function () {
 			const result = Object.values(response);
 			result.pop();
 			if (response.status === 'success') {
-				setData(result);
+				const availableDrivers = result.filter(
+					(driver) => driver.availableHours.length > 0
+				);
+				const unavailableDrivers = result.filter(
+					(driver) => driver.availableHours.length === 0
+				);
+
+				// Sort both groups alphabetically by fullName
+				availableDrivers.sort((a, b) => a.fullName.localeCompare(b.fullName));
+				unavailableDrivers.sort((a, b) => a.fullName.localeCompare(b.fullName));
+				setData([...availableDrivers, ...unavailableDrivers]);
 			}
 		}
 		getData();
 	}, [date, isActiveTestMode]);
-
+	console.log('driver availability data', data);
 	return (
 		<div
 			className={`h-full w-[250px] bg-gray-200 mx-auto mt-6 flex justify-center items-center shadow-lg rounded-md`}

@@ -28,7 +28,11 @@ export default function DuplicateBookingModal({
 	if (activeSearch) data = activeSearchResult;
 	const user = useAuth();
 	const [isToggleTrue, setToggleTrue] = useState(true);
-	const [newDate, setNewDate] = useState(formatDate(new Date()));
+	const [newDate, setNewDate] = useState(
+		data.pickupDateTime <= formatDate(new Date())
+			? formatDate(new Date())
+			: data.pickupDateTime
+	);
 	const dispatch = useDispatch();
 	const handleToggleChange = () => {
 		setToggleTrue(!isToggleTrue);

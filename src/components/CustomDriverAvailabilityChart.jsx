@@ -42,7 +42,7 @@ const WrapperDiv = function () {
 	console.log('driver availability data', data);
 	return (
 		<div
-			className={`h-full w-[250px] bg-gray-200 mx-auto mt-6 flex justify-center items-center shadow-lg rounded-md`}
+			className={`h-full w-full bg-gray-200 mx-auto mt-6 flex justify-center items-center shadow-lg rounded-md`}
 		>
 			<div className='flex h-full w-full'>
 				<div className='flex flex-col h-[75vh] w-10 border-r border-r-gray-400'>
@@ -81,7 +81,7 @@ const TimeBar = ({ driver }) => {
 	if (!availableHours) return null;
 
 	return (
-		<div className='relative h-full w-[30px] border border-gray-100 border-b-black'>
+		<div className='relative h-full w-[25px] border border-gray-100 border-b-black'>
 			{/* Hourly Lines */}
 			{Array.from({ length: 24 }, (_, i) => (
 				<div

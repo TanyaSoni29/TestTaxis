@@ -73,6 +73,13 @@ const WrapperDiv = function () {
 };
 
 const TimeBar = ({ driver }) => {
+	const formatTime = (time) => {
+		const [hours, minutes] = time.split(':');
+		return new Date(0, 0, 0, hours, minutes).toLocaleTimeString([], {
+			hour: '2-digit',
+			minute: '2-digit',
+		});
+	};
 	const availableHours = driver.availableHours;
 	const driverName = driver.fullName.split(' ')[0];
 	const driverId = driver.userId;
@@ -99,7 +106,9 @@ const TimeBar = ({ driver }) => {
 				const fromPercent = getPercentage(slot.from);
 				const toPercent = getPercentage(slot.to);
 				const heightPercent = toPercent - fromPercent;
-				const toolTip = `(${driver.userId})${driver.fullName}\n(${slot.from} - ${slot.to})\n${slot.note}`;
+				const formattedFrom = formatTime(slot.from);
+				const formattedTo = formatTime(slot.to);
+				const toolTip = `(${driver.userId})${driver.fullName}\n(${formattedFrom} - ${formattedTo})\n${slot.note}`;
 
 				return (
 					<div

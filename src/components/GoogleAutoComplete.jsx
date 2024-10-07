@@ -32,7 +32,7 @@ function PlaceAutocomplete({
 		const input = event.target.value;
 		let tempSuggestions = [];
 		setHighlightedIndex(-1);
-		if (input.length > 2) {
+		if (input.length >= 4) {
 			const res = await getPoi(input);
 			tempSuggestions = res.map((poi) => ({
 				label: `${poi.address}, ${poi.postcode}`,

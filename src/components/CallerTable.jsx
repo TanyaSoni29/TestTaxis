@@ -82,7 +82,7 @@ const BookingTable = ({ onConfirm, onSet, numBooking }) => {
 	console.log(activeTab);
 
 	return (
-		<div className='w-[75vw] mx-auto bg-white rounded-lg shadow-lg p-5'>
+		<div className='w-[60vw] fixed right-[-300px] top-[-100px] bg-white rounded-lg shadow-lg p-5'>
 			<div className='flex justify-between'>
 				<h2 className='text-xl font-semibold mb-4 '>
 					📞 ({bookings.Telephone})

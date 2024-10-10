@@ -215,7 +215,7 @@ async function getPoi(code) {
 }
 
 async function getPostal(code) {
-	const URL = `https://api.getaddress.io/v2/uk/${code}?api-key=RCX7bLL_a0C5xaApbiBLFQ983`;
+	const URL = `https://api.getaddress.io/v2/uk/${code}?api-key=jfLGB-3SeE-asi_xmTyAAA44072`;
 	const res = await handleGetReq(URL);
 	return res;
 }

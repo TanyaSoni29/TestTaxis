@@ -383,16 +383,23 @@ async function bookingFindByTerm(queryField, testMode = false) {
 	return res;
 }
 
-async function bookingFindByKeyword(queryField, testMode = false) {
-	const URL = `${
-		testMode ? TEST : BASE
-	}/api/Bookings/FindByKeyword?keyword=${queryField}`;
-	const res = await handleGetReq(URL);
+async function bookingFindByBookings(data, testMode = false) {
+	const URL = `${testMode ? TEST : BASE}/api/Bookings/FindBookings`;
+	const reqData = {
+		pickupAddress: data.pickupAddress || '',
+		pickupPostcode: data.pickupPostcode || '',
+		destinationAddress: data.destinationAddress || '',
+		destinationPostcode: data.destinationPostCode || '',
+		passenger: data.passenger || '',
+		phoneNumber: data.phoneNumber || '',
+		details: data.details || '',
+	};
+	const res = await handlePostReq(URL, reqData);
 	if (res.status === 'success')
 		sendLogs(
 			{
 				url: URL,
-				requestBody: queryField,
+				requestBody: reqData,
 				headers: setHeaders(),
 				response: res,
 			},
@@ -425,6 +432,6 @@ export {
 	allocateDriver,
 	completeBookings,
 	bookingFindByTerm,
-	bookingFindByKeyword,
+	bookingFindByBookings,
 	findBookingById,
 };

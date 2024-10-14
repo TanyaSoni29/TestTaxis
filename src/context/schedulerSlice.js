@@ -6,9 +6,10 @@ import {
 	deleteSchedulerBooking as deleteBooking,
 	allocateDriver,
 	completeBookings,
-	bookingFindByKeyword,
-	bookingFindByTerm,
+	// bookingFindByKeyword,
+	// bookingFindByTerm,
 	findBookingById,
+	bookingFindByBookings,
 } from '../utils/apiReq';
 import axios from 'axios';
 
@@ -249,7 +250,9 @@ export const handleSearchBooking = function (keyword) {
 		// 	dispatch(schedulerSlice.actions.makeSearchActive(results));
 		// }
 		dispatch(schedulerSlice.actions.setLoading(true));
-		const res = await bookingFindByTerm(keyword, activeTestMode);
+		// const res = await bookingFindByTerm(keyword, activeTestMode);
+		const res = await bookingFindByBookings(keyword, activeTestMode);
+
 		dispatch(schedulerSlice.actions.setLoading(false));
 		if (res.status === 'success') {
 			const results = res.results

@@ -199,7 +199,7 @@ async function makeBookingQuoteRequest(data) {
 
 	return res;
 }
-
+// Local Api for address Suggestions
 async function getPoi(code) {
 	try {
 		const URL = `${BASE}/api/LocalPOI/GetPOI`;
@@ -214,6 +214,7 @@ async function getPoi(code) {
 	}
 }
 
+// get Address Api Calling for Postcode Suggestions dropdown
 async function getPostal(code) {
 	const URL = `https://api.getaddress.io/v2/uk/${code}?api-key=jfLGB-3SeE-asi_xmTyAAA44072`;
 	const res = await handleGetReq(URL);
@@ -246,7 +247,7 @@ async function updateBooking(data, testMode = false) {
 		filteredData = { ...filteredData, editBlock: data.editBlock };
 	}
 
-	console.log(filteredData);
+	// console.log(filteredData);
 	const res = await handlePostReq(URL, filteredData);
 	if (res.status === 'success')
 		sendLogs(

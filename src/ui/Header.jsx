@@ -71,6 +71,7 @@ const Navbar = () => {
 							</Badge>
 						)}
 
+						{/* Search Form Started here */}
 						<div className='flex justify-center items-center uppercase'>
 							<form
 								onSubmit={handleClick}
@@ -108,6 +109,8 @@ const Navbar = () => {
 								</button>
 							</form>
 						</div>
+
+						{/* Test Mode Toogle Button */}
 						<span className='flex flex-row gap-2 items-center align-middle'>
 							<span>Test Mode</span>
 							<Switch
@@ -117,6 +120,8 @@ const Navbar = () => {
 								}}
 							/>
 						</span>
+
+						{/* Logout Button */}
 						<button
 							className='bg-blue-500 text-white px-4 py-2 rounded-lg uppercase text-sm'
 							onClick={() => {

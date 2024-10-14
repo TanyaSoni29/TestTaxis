@@ -33,12 +33,15 @@ function Footer() {
 				</div>
 
 				<div className='flex justify-center items-center text-gray-200 gap-2 cursor-pointer'>
+					{/* Availabilty Check Button */}
 					<div className='flex justify-center items-center gap-1'>
 						<span>Availability</span>
 						<input
 							type='checkbox'
 							checked={showDriverAvailability}
-							onChange={() => dispatch(changeShowDriverAvailability(!showDriverAvailability))}
+							onChange={() =>
+								dispatch(changeShowDriverAvailability(!showDriverAvailability))
+							}
 						/>
 					</div>
 

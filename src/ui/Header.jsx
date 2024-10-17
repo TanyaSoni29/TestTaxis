@@ -138,7 +138,7 @@ function SearchModal({ setOpenSearch }) {
 		register,
 		handleSubmit,
 		reset,
-		formState: { isSubmitSuccessful },
+		formState: { isSubmitSuccessful, errors }, // Access form errors
 	} = useForm({
 		defaultValues: {
 			pickupAddress: '',
@@ -209,12 +209,26 @@ function SearchModal({ setOpenSearch }) {
 					<TextField
 						label='Pickup Address'
 						fullWidth
-						{...register('pickupAddress')}
+						error={!!errors.pickupAddress} // Show error if validation fails
+						helperText={errors.pickupAddress ? 'Must be at least 3 characters' : ''}
+						{...register('pickupAddress', {
+							minLength: {
+								value: 3,
+								message: 'Must be at least 3 characters',
+							},
+						})}
 					/>
 					<TextField
 						label='Pickup Postcode'
 						fullWidth
-						{...register('pickupPostcode')}
+						error={!!errors.pickupPostcode}
+						helperText={errors.pickupPostcode ? 'Must be at least 3 Numbers' : ''}
+						{...register('pickupPostcode', {
+							minLength: {
+								value: 3,
+								message: 'Must be at least 3 Numbers',
+							},
+						})}
 					/>
 				</Box>
 				<Box
@@ -226,12 +240,26 @@ function SearchModal({ setOpenSearch }) {
 					<TextField
 						label='Destination Address'
 						fullWidth
-						{...register('destinationAddress')}
+						error={!!errors.destinationAddress}
+						helperText={errors.destinationAddress ? 'Must be at least 3 characters' : ''}
+						{...register('destinationAddress', {
+							minLength: {
+								value: 3,
+								message: 'Must be at least 3 characters',
+							},
+						})}
 					/>
 					<TextField
 						label='Destination Postcode'
 						fullWidth
-						{...register('destinationPostcode')}
+						error={!!errors.destinationPostcode}
+						helperText={errors.destinationPostcode ? 'Must be at least 3 Numbers' : ''}
+						{...register('destinationPostcode', {
+							minLength: {
+								value: 3,
+								message: 'Must be at least 3 Numbers',
+							},
+						})}
 					/>
 				</Box>
 				<Box
@@ -243,12 +271,26 @@ function SearchModal({ setOpenSearch }) {
 					<TextField
 						label='Passenger'
 						fullWidth
-						{...register('passenger')}
+						error={!!errors.passenger}
+						helperText={errors.passenger ? 'Must be at least 3 characters' : ''}
+						{...register('passenger', {
+							minLength: {
+								value: 3,
+								message: 'Must be at least 3 characters',
+							},
+						})}
 					/>
 					<TextField
 						label='Phone Number'
 						fullWidth
-						{...register('phoneNumber')}
+						error={!!errors.phoneNumber}
+						helperText={errors.phoneNumber ? 'Must be at least 3 Numbers' : ''}
+						{...register('phoneNumber', {
+							minLength: {
+								value: 3,
+								message: 'Must be at least 3 Numbers',
+							},
+						})}
 					/>
 				</Box>
 				<Box
@@ -260,7 +302,14 @@ function SearchModal({ setOpenSearch }) {
 					<TextField
 						label='Details'
 						fullWidth
-						{...register('details')}
+						error={!!errors.details}
+						helperText={errors.details ? 'Must be at least 3 characters' : ''}
+						{...register('details', {
+							minLength: {
+								value: 3,
+								message: 'Must be at least 3 characters',
+							},
+						})}
 					/>
 				</Box>
 
@@ -282,3 +331,4 @@ function SearchModal({ setOpenSearch }) {
 		</div>
 	);
 }
+

@@ -216,9 +216,35 @@ async function getPoi(code) {
 
 // get Address Api Calling for Postcode Suggestions dropdown
 async function getPostal(code) {
-	const URL = `https://api.getaddress.io/v2/uk/${code}?api-key=jfLGB-3SeE-asi_xmTyAAA44072`;
+	const apiKey = import.meta.env.VITE_GETADDRESS_KEY;
+	const URL = `https://api.getaddress.io/v2/uk/${code}?api-key=${apiKey}`;
 	const res = await handleGetReq(URL);
 	return res;
+}
+
+async function getAddressDetails(id) {
+	const apiKey = import.meta.env.VITE_GETADDRESS_KEY; // Replace with your actual API key
+	const URL = `https://api.getAddress.io/get/${id}?api-key=${apiKey}`;
+	try {
+		const response = await axios.get(URL);
+		const data = response.data;
+		// console.log('getAddressDetails', data);
+
+		// Clean up formatted_address by filtering out empty or null values
+		const cleanedAddress = data.formatted_address
+			.filter((line) => line && line.trim()) // Remove empty or undefined lines
+			.join(', '); // Combine the filtered address fields
+
+		return {
+			address: cleanedAddress, // Use the cleaned address
+			postcode: data.postcode || 'No Postcode', // Fallback for postcode
+			latitude: data.latitude,
+			longitude: data.longitude,
+		}; // Return the full address details including postcode
+	} catch (error) {
+		console.error('Error fetching full address details:', error);
+		return null;
+	}
 }
 
 async function getAllDrivers() {
@@ -298,26 +324,64 @@ async function getDriverAvailability(dueDate, testMode = true) {
 	return await handleGetReq(URL);
 }
 
+// async function getAddressSuggestions(location) {
+// 	const apiKey = import.meta.env.VITE_GETADDRESS_KEY;
+// 	try {
+// 		// Get autocomplete suggestions
+// 		const autocompleteResponse = await axios.get(
+// 			`https://api.getAddress.io/autocomplete/${location}?api-key=${apiKey}`
+// 		);
+// 		const suggestions = autocompleteResponse.data.suggestions;
+
+// 		// Fetch details for each suggestion
+// 		const detailsPromises = suggestions.map(async (suggestion) => {
+// 			const detailResponse = await axios.get(
+// 				`https://api.getAddress.io/get/${suggestion.id}?api-key=${apiKey}`
+// 			);
+// 			return detailResponse.data;
+// 		});
+
+// 		const details = await Promise.all(detailsPromises);
+
+// 		return details;
+// 	} catch (error) {
+// 		console.error('Error fetching address suggestions:', error);
+// 		return [];
+// 	}
+// }
+
 async function getAddressSuggestions(location) {
 	const apiKey = import.meta.env.VITE_GETADDRESS_KEY;
 	try {
-		// Get autocomplete suggestions
+		// Step 1: Get autocomplete suggestions
 		const autocompleteResponse = await axios.get(
 			`https://api.getAddress.io/autocomplete/${location}?api-key=${apiKey}`
 		);
 		const suggestions = autocompleteResponse.data.suggestions;
 
-		// Fetch details for each suggestion
+		// Step 2: Fetch details for each suggestion based on the returned IDs
 		const detailsPromises = suggestions.map(async (suggestion) => {
-			const detailResponse = await axios.get(
-				`https://api.getAddress.io/get/${suggestion.id}?api-key=${apiKey}`
-			);
-			return detailResponse.data;
+			// Fetch full details for the suggestion
+			const detail = await getAddressDetails(suggestion.id);
+			// console.log({ suggestion, detail });
+			if (detail) {
+				return {
+					label: `${detail.address}, ${detail.postcode}`, // Combine address and postcode
+					id: suggestion.id,
+					latitude: detail.latitude,
+					longitude: detail.longitude,
+					address: detail.address,
+					postcode: detail.postcode,
+				};
+			} else {
+				// If details couldn't be fetched, return null (to filter out later)
+				return null;
+			}
 		});
 
+		// Await all the promises for full details, then filter out any null values
 		const details = await Promise.all(detailsPromises);
-
-		return details;
+		return details.filter(Boolean); // Filter out null values
 	} catch (error) {
 		console.error('Error fetching address suggestions:', error);
 		return [];
@@ -434,4 +498,5 @@ export {
 	bookingFindByTerm,
 	bookingFindByBookings,
 	findBookingById,
+	getAddressDetails,
 };

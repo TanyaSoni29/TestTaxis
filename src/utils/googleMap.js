@@ -22,7 +22,7 @@ export const loadGoogleMapsScript = (callback, mapLoaded) => {
 	script.async = true;
 	script.onload = () => {
 		isLoaded = true;
-		autocompleteService = new window.google.maps.places.AutocompleteService();
+		// autocompleteService = new window.google.maps.places.AutocompleteService();
 		placesService = new window.google.maps.places.PlacesService(
 			document.createElement('div')
 		);

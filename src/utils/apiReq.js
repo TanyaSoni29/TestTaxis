@@ -175,7 +175,7 @@ const getBookingData = async function (date, testMode = false) {
 };
 
 async function makeBookingQuoteRequest(data) {
-	const URL = BASE + '/api/Bookings/Quote';
+	const URL = TEST + '/api/Bookings/Quote';
 	const requestData = {
 		pickupPostcode: data.pickupPostcode,
 		viaPostcodes: data.viaPostcodes,
@@ -202,7 +202,7 @@ async function makeBookingQuoteRequest(data) {
 // Local Api for address Suggestions
 async function getPoi(code) {
 	try {
-		const URL = `${BASE}/api/LocalPOI/GetPOI`;
+		const URL = `${TEST}/api/LocalPOI/GetPOI`;
 		const config = {
 			headers: setHeaders(),
 		};
@@ -248,12 +248,12 @@ async function getAddressDetails(id) {
 }
 
 async function getAllDrivers() {
-	const URL = `${BASE}/api/UserProfile/ListUsers`;
+	const URL = `${TEST}/api/UserProfile/ListUsers`;
 	return await handleGetReq(URL);
 }
 
 async function getAccountList() {
-	const URL = `${BASE}/api/Accounts/GetList`;
+	const URL = `${TEST}/api/Accounts/GetList`;
 	const data = await handleGetReq(URL);
 	if (data.status === 'success') {
 		const formatedData = Object.keys(data).map((el) => data[el]);
@@ -389,7 +389,7 @@ async function getAddressSuggestions(location) {
 }
 
 async function fireCallerEvent(number) {
-	const URL = `${BASE}/api/CallEvents/CallerLookup?caller_id=${number}`;
+	const URL = `${TEST}/api/CallEvents/CallerLookup?caller_id=${number}`;
 	if (number.length < 10) return;
 	return await handleGetReq(URL);
 }

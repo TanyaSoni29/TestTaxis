@@ -186,14 +186,20 @@ export function allocateBookingToDriver(actionByUserId) {
 
 			// const expoToken = notification.data.data.expoNotificationToken;
 			const bookingId = currentBooking.bookingId;
+			const URL = 'http://192.168.1.13:80/api/Authenticate/sendnotification';
 			await axios.post(
-				'http://192.168.1.13:80/api/Authenticate/sendnotification',
+				URL,
 				{
-					userId: selectedDriver,
+					userId: '20',
 					title: 'Got a new booking',
 					messageBody:
 						'You have been allocated a new booking. Please check the app for more details.',
 					bookingId: `${bookingId}`,
+				},
+				{
+					headers: {
+						'Content-Type': 'application/json',
+					},
 				}
 			);
 

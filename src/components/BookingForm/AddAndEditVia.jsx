@@ -8,6 +8,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Dragger from '../Dragger';
 import Autocomplete from '../AutoComplete';
 import GoogleAutoComplete from '../GoogleAutoComplete';
+import GoogleAutoComplete2 from '../GoogleAutoComplete2';
 import LongButton from './LongButton';
 import { updateValue } from '../../context/bookingSlice';
 
@@ -15,6 +16,7 @@ const AddAndEditVia = ({ onSet }) => {
 	// fetching global state for via points
 	const dispatch = useDispatch();
 	const data = useSelector((state) => state.bookingForm.bookings);
+	const isGoogleApiOn = useSelector((state) => state.bookingForm.isGoogleApiOn);
 	const id = useSelector((state) => state.bookingForm.activeBookingIndex);
 
 	// local state for the via points
@@ -83,12 +85,21 @@ const AddAndEditVia = ({ onSet }) => {
 			</div>
 
 			<div className='space-y-4'>
-				<GoogleAutoComplete
-					placeholder='Pickup Address'
-					value={newViaAddress}
-					onPushChange={handleSelectAutocomplete}
-					onChange={(e) => setNewViaAddress(e.target.value)}
-				/>
+				{isGoogleApiOn ? (
+					<GoogleAutoComplete
+						placeholder='Pickup Address'
+						value={newViaAddress}
+						onPushChange={handleSelectAutocomplete}
+						onChange={(e) => setNewViaAddress(e.target.value)}
+					/>
+				) : (
+					<GoogleAutoComplete2
+						placeholder='Pickup Address'
+						value={newViaAddress}
+						onPushChange={handleSelectAutocomplete}
+						onChange={(e) => setNewViaAddress(e.target.value)}
+					/>
+				)}
 				<Autocomplete
 					type='postal'
 					required={false}

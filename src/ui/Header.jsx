@@ -8,7 +8,7 @@ import Modal from '../components/Modal';
 import CallIcon from '@mui/icons-material/Call';
 import Badge from '@mui/material/Badge';
 import { useDispatch, useSelector } from 'react-redux';
-import { setActiveTestMode } from '../context/bookingSlice';
+import { setActiveTestMode, setIsGoogleApiOn } from '../context/bookingSlice';
 import {
 	handleSearchBooking,
 	makeSearchInactive,
@@ -26,6 +26,7 @@ const Navbar = () => {
 	const activeTestMode = useSelector(
 		(state) => state.bookingForm.isActiveTestMode
 	);
+	const isGoogleApiOn = useSelector((state) => state.bookingForm.isGoogleApiOn);
 	const callerId = useSelector((state) => state.caller);
 	const { activeSearch } = useSelector((state) => state.scheduler);
 	const [openSearch, setOpenSearch] = useState(false);
@@ -100,6 +101,16 @@ const Navbar = () => {
 									<button onClick={handleCancelSearch}>Cancel Search</button>
 								)}
 							</div>
+
+							<span className='flex flex-row gap-2 items-center align-middle'>
+								<span>Use Google Api</span>
+								<Switch
+									checked={isGoogleApiOn}
+									onChange={(e) => {
+										dispatch(setIsGoogleApiOn(e.target.checked));
+									}}
+								/>
+							</span>
 
 							{/* Test Mode Toogle Button */}
 							<span className='flex flex-row gap-2 items-center align-middle'>
@@ -210,7 +221,9 @@ function SearchModal({ setOpenSearch }) {
 						label='Pickup Address'
 						fullWidth
 						error={!!errors.pickupAddress} // Show error if validation fails
-						helperText={errors.pickupAddress ? 'Must be at least 3 characters' : ''}
+						helperText={
+							errors.pickupAddress ? 'Must be at least 3 characters' : ''
+						}
 						{...register('pickupAddress', {
 							minLength: {
 								value: 3,
@@ -222,7 +235,9 @@ function SearchModal({ setOpenSearch }) {
 						label='Pickup Postcode'
 						fullWidth
 						error={!!errors.pickupPostcode}
-						helperText={errors.pickupPostcode ? 'Must be at least 3 Numbers' : ''}
+						helperText={
+							errors.pickupPostcode ? 'Must be at least 3 Numbers' : ''
+						}
 						{...register('pickupPostcode', {
 							minLength: {
 								value: 3,
@@ -241,7 +256,9 @@ function SearchModal({ setOpenSearch }) {
 						label='Destination Address'
 						fullWidth
 						error={!!errors.destinationAddress}
-						helperText={errors.destinationAddress ? 'Must be at least 3 characters' : ''}
+						helperText={
+							errors.destinationAddress ? 'Must be at least 3 characters' : ''
+						}
 						{...register('destinationAddress', {
 							minLength: {
 								value: 3,
@@ -253,7 +270,9 @@ function SearchModal({ setOpenSearch }) {
 						label='Destination Postcode'
 						fullWidth
 						error={!!errors.destinationPostcode}
-						helperText={errors.destinationPostcode ? 'Must be at least 3 Numbers' : ''}
+						helperText={
+							errors.destinationPostcode ? 'Must be at least 3 Numbers' : ''
+						}
 						{...register('destinationPostcode', {
 							minLength: {
 								value: 3,
@@ -331,4 +350,3 @@ function SearchModal({ setOpenSearch }) {
 		</div>
 	);
 }
-

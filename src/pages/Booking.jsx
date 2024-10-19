@@ -20,6 +20,7 @@ import Autocomplete from '../components/AutoComplete';
 import Modal from '../components/Modal';
 import SimpleSnackbar from '../components/Snackbar-v2';
 import GoogleAutoComplete from '../components/GoogleAutoComplete';
+import GoogleAutoComplete2 from '../components/GoogleAutoComplete2';
 import LongButton from '../components/BookingForm/LongButton';
 
 // All Modals and dialogs for the booking form
@@ -39,6 +40,7 @@ function Booking({ bookingData, id, onBookingUpload }) {
 	const { currentUser, isAuth } = useAuth();
 	const dispatch = useDispatch();
 	const callerId = useSelector((state) => state.caller);
+	const { isGoogleApiOn } = useSelector((state) => state.bookingForm);
 
 	// All Local States and Hooks for ui and fligs
 	const [isAddVIAOpen, setIsAddVIAOpen] = useState(false);
@@ -452,23 +454,43 @@ function Booking({ bookingData, id, onBookingUpload }) {
 					{/* Google AutoSuggestion 1 */}
 
 					<div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-2'>
-						<GoogleAutoComplete
-							placeholder='Pickup Address'
-							value={bookingData.pickupAddress}
-							onPushChange={handleAddPickup}
-							onChange={(e) => {
-								const addressValue = e.target.value;
-								updateData('pickupAddress', addressValue);
+						{isGoogleApiOn ? (
+							<GoogleAutoComplete
+								placeholder='Pickup Address'
+								value={bookingData.pickupAddress}
+								onPushChange={handleAddPickup}
+								onChange={(e) => {
+									const addressValue = e.target.value;
+									updateData('pickupAddress', addressValue);
 
-								// Clear pickupPostCode if pickupAddress is empty
-								if (!addressValue) {
-									updateData('pickupPostCode', '');
-								}
-							}}
-							inputRef={pickupRef}
-							handleChangeRef={(e) => handleChangeFocus(e, destinationRef)}
-							handleClickRef={(e) => handleClick(e, pickupRef)}
-						/>
+									// Clear pickupPostCode if pickupAddress is empty
+									if (!addressValue) {
+										updateData('pickupPostCode', '');
+									}
+								}}
+								inputRef={pickupRef}
+								handleChangeRef={(e) => handleChangeFocus(e, destinationRef)}
+								handleClickRef={(e) => handleClick(e, pickupRef)}
+							/>
+						) : (
+							<GoogleAutoComplete2
+								placeholder='Pickup Address'
+								value={bookingData.pickupAddress}
+								onPushChange={handleAddPickup}
+								onChange={(e) => {
+									const addressValue = e.target.value;
+									updateData('pickupAddress', addressValue);
+
+									// Clear pickupPostCode if pickupAddress is empty
+									if (!addressValue) {
+										updateData('pickupPostCode', '');
+									}
+								}}
+								inputRef={pickupRef}
+								handleChangeRef={(e) => handleChangeFocus(e, destinationRef)}
+								handleClickRef={(e) => handleClick(e, pickupRef)}
+							/>
+						)}
 						<Autocomplete
 							type='postal'
 							required={false}
@@ -503,22 +525,41 @@ function Booking({ bookingData, id, onBookingUpload }) {
 
 					{/* Google AutoSuggestion 2 */}
 					<div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-2'>
-						<GoogleAutoComplete
-							placeholder='Destination Address'
-							value={bookingData.destinationAddress}
-							onPushChange={handleAddDestination}
-							onChange={(e) => {
-								const addressValue = e.target.value;
-								updateData('destinationAddress', addressValue);
+						{isGoogleApiOn ? (
+							<GoogleAutoComplete
+								placeholder='Destination Address'
+								value={bookingData.destinationAddress}
+								onPushChange={handleAddDestination}
+								onChange={(e) => {
+									const addressValue = e.target.value;
+									updateData('destinationAddress', addressValue);
 
-								if (!addressValue) {
-									updateData('destinationPostCode', '');
-								}
-							}}
-							inputRef={destinationRef}
-							handleChangeRef={(e) => handleChangeFocus(e, userNameRef)}
-							handleClickRef={(e) => handleClick(e, destinationRef)}
-						/>
+									if (!addressValue) {
+										updateData('destinationPostCode', '');
+									}
+								}}
+								inputRef={destinationRef}
+								handleChangeRef={(e) => handleChangeFocus(e, userNameRef)}
+								handleClickRef={(e) => handleClick(e, destinationRef)}
+							/>
+						) : (
+							<GoogleAutoComplete2
+								placeholder='Destination Address'
+								value={bookingData.destinationAddress}
+								onPushChange={handleAddDestination}
+								onChange={(e) => {
+									const addressValue = e.target.value;
+									updateData('destinationAddress', addressValue);
+
+									if (!addressValue) {
+										updateData('destinationPostCode', '');
+									}
+								}}
+								inputRef={destinationRef}
+								handleChangeRef={(e) => handleChangeFocus(e, userNameRef)}
+								handleClickRef={(e) => handleClick(e, destinationRef)}
+							/>
+						)}
 						<Autocomplete
 							required={false}
 							type='postal'

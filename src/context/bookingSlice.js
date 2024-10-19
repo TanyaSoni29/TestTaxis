@@ -54,6 +54,7 @@ const initialState = {
 	error: null,
 	activeBookingIndex: 0,
 	isActiveTestMode: true,
+	isGoogleApiOn: false,
 };
 
 const bookingFormSlice = createSlice({
@@ -110,6 +111,9 @@ const bookingFormSlice = createSlice({
 		},
 		setLoading(state, action) {
 			state.isLoading = action.payload;
+		},
+		setIsGoogleApiOn(state, action) {
+			state.isGoogleApiOn = action.payload;
 		},
 		// changes active tab which makes the flow of form data
 		setActiveTabChange(state, action) {
@@ -202,6 +206,7 @@ export const {
 	endBooking,
 	setActiveTabChange,
 	setActiveTestMode,
+	setIsGoogleApiOn,
 	updateBookingData,
 	addDataFromSchedulerInEditMode,
 	createBookingFromScheduler,

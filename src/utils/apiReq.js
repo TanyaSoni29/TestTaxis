@@ -411,6 +411,23 @@ async function allocateDriver(allocateReqData, testMode = false) {
 	return res;
 }
 
+async function softAllocateDriver(allocateReqData, testMode = false) {
+	const URL = `${testMode ? TEST : BASE}/api/Bookings/SoftAllocate`;
+	const res = await handlePostReq(URL, allocateReqData);
+	if (res.status === 'success')
+		sendLogs(
+			{
+				url: URL,
+				requestBody: allocateReqData,
+				headers: setHeaders(),
+				response: res,
+			},
+			'info'
+		);
+
+	return res;
+}
+
 async function completeBookings(completeBookingData, testMode = false) {
 	const URL = `${testMode ? TEST : BASE}/api/Bookings/Complete`;
 	const res = await handlePostReq(URL, completeBookingData);
@@ -498,5 +515,6 @@ export {
 	bookingFindByTerm,
 	bookingFindByBookings,
 	findBookingById,
+	softAllocateDriver,
 	getAddressDetails,
 };

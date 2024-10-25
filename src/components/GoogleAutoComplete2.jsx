@@ -1,4 +1,5 @@
 /** @format */
+
 import { useEffect, useState } from 'react';
 import { TextField } from '@mui/material';
 import {
@@ -15,6 +16,7 @@ function GoogleAutoComplete({
 	inputRef,
 	handleChangeRef,
 	handleClickRef,
+	// setPostcodeFilled,
 }) {
 	const [suggestions, setSuggestions] = useState([]);
 	const [showOption, setShowOption] = useState(false);
@@ -27,7 +29,7 @@ function GoogleAutoComplete({
 		const input = event.target.value;
 		setHighlightedIndex(-1); // Reset highlighted index
 
-		// Fetch suggestions if input length is greater than or equal to 3
+		// Fetch suggestions if input length is greater than or equal to 4
 		if (input.length >= 4) {
 			try {
 				// Fetch local API suggestions (getPoi)
@@ -46,13 +48,8 @@ function GoogleAutoComplete({
 				// Fetch getAddress.io suggestions
 				const addressSuggestions = await getAddressSuggestions(input);
 				const addressFormatted = addressSuggestions.map((suggestion) => ({
-					label: `${suggestion.address}, ${
-						suggestion.postcode || 'No Postcode'
-					}`,
+					label: suggestion.address, // Use the address directly
 					id: suggestion.id,
-					longitude: suggestion.longitude,
-					latitude: suggestion.latitude,
-					postcode: suggestion.postcode || 'No Postcode',
 					address: suggestion.address || 'Unknown Address',
 					source: 'getAddress',
 				}));
@@ -78,10 +75,10 @@ function GoogleAutoComplete({
 		if (suggestion.source === 'getAddress') {
 			try {
 				const fullDetails = await getAddressDetails(suggestion.id);
-
+				console.log('------', fullDetails);
 				if (fullDetails) {
-					selectedAddress =
-						fullDetails.formatted_address.join(', ') || 'Unknown Address';
+					// selectedAddress =
+					// 	fullDetails.formatted_address.join(', ') || 'Unknown Address';
 					selectedPostcode = fullDetails.postcode || 'No Postcode';
 				}
 			} catch (error) {
@@ -97,6 +94,7 @@ function GoogleAutoComplete({
 			address: selectedAddress,
 			postcode: selectedPostcode,
 		});
+		// setPostcodeFilled(true); // Set postcode filled flag to true
 
 		// Clear suggestions and reset highlighted index
 		setSuggestions([]);

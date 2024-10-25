@@ -31,6 +31,7 @@ import { Switch } from '@mui/material';
 import {
 	changeActiveDate,
 	completeActiveBookingStatus,
+	fetchDriverAvailabilityForDate,
 	getRefreshedBookings,
 	setActiveBookingIndex,
 	setActiveSearchResult,
@@ -118,6 +119,11 @@ const AceScheduler = () => {
 		return () => clearInterval(refreshInterval);
 	}, [dispatch]);
 
+	useEffect(() => {
+		// Fetch driver availability whenever the date changes
+		dispatch(fetchDriverAvailabilityForDate(activeDate));
+	}, [activeDate, dispatch]);
+
 	const eventSettings = {
 		dataSource: activeSearch ? activeSearchResults : bookings,
 		fields: fieldsData,
@@ -142,6 +148,12 @@ const AceScheduler = () => {
 		dispatch(createBookingFromScheduler(args.startTime));
 	};
 
+	// const handleDateChange = (args) => {
+	// 	const newDate = new Date(args.currentDate).toISOString();
+	// 	dispatch(changeActiveDate(newDate));
+	// 	dispatch(fetchDriverAvailabilityForDate(newDate));
+	// };
+	console.log('active Date--- for scheduler', activeDate);
 	return (
 		<ProtectedRoute>
 			<Snackbar />

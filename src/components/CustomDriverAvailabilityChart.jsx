@@ -11,35 +11,40 @@ const getPercentage = (time) => {
 
 const WrapperDiv = function () {
 	const [data, setData] = useState([]);
+	const { activeDate, driverAvailability } = useSelector(
+		(state) => state.scheduler
+	);
+	// console.log('active Date:', activeDate);
 	const { bookings, activeBookingIndex, isActiveTestMode } = useSelector(
 		(state) => state.bookingForm
 	);
 	const date = bookings[activeBookingIndex].pickupDateTime;
-	useEffect(() => {
-		async function getData() {
-			const response = await getDriverAvailability(
-				new Date(date).toISOString(),
-				isActiveTestMode
-			);
-			const result = Object.values(response);
-			result.pop();
-			if (response.status === 'success') {
-				const availableDrivers = result.filter(
-					(driver) => driver.availableHours.length > 0
-				);
-				const unavailableDrivers = result.filter(
-					(driver) => driver.availableHours.length === 0
-				);
+	// useEffect(() => {
+	// 	async function getData() {
+	// 		const response = await getDriverAvailability(
+	// 			// new Date(date).toISOString(),
+	// 			new Date(activeDate).toISOString(),
+	// 			isActiveTestMode
+	// 		);
+	// 		const result = Object.values(response);
+	// 		result.pop();
+	// 		if (response.status === 'success') {
+	// 			const availableDrivers = result.filter(
+	// 				(driver) => driver.availableHours.length > 0
+	// 			);
+	// 			const unavailableDrivers = result.filter(
+	// 				(driver) => driver.availableHours.length === 0
+	// 			);
 
-				// Sort both groups alphabetically by fullName
-				availableDrivers.sort((a, b) => a.fullName.localeCompare(b.fullName));
-				unavailableDrivers.sort((a, b) => a.fullName.localeCompare(b.fullName));
-				setData([...availableDrivers, ...unavailableDrivers]);
-			}
-		}
-		getData();
-	}, [date, isActiveTestMode]);
-	console.log('driver availability data', data);
+	// 			// Sort both groups alphabetically by fullName
+	// 			availableDrivers.sort((a, b) => a.fullName.localeCompare(b.fullName));
+	// 			unavailableDrivers.sort((a, b) => a.fullName.localeCompare(b.fullName));
+	// 			setData([...availableDrivers, ...unavailableDrivers]);
+	// 		}
+	// 	}
+	// 	getData();
+	// }, [activeDate, isActiveTestMode]);
+	// console.log('driver availability data', data);
 	return (
 		<div
 			className={`h-full w-full bg-white mx-auto mt-6 flex justify-center items-center shadow-lg rounded-md`}
@@ -59,7 +64,7 @@ const WrapperDiv = function () {
 
 				<div className='available h-full w-full flex overflow-x-auto overflow-y-hidden ml-0.5'>
 					<div className='flex h-[75vh] justify-evenly gap-0.5'>
-						{data.map((driver, index) => (
+						{driverAvailability.map((driver, index) => (
 							<TimeBar
 								key={index}
 								driver={driver}

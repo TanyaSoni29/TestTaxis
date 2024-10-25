@@ -11,6 +11,7 @@ import {
 	findBookingById,
 	bookingFindByBookings,
 	softAllocateDriver,
+	getDriverAvailability,
 } from '../utils/apiReq';
 import axios from 'axios';
 
@@ -40,6 +41,7 @@ const schedulerSlice = createSlice({
 		activeSearchResults: [],
 		activeSearchResult: null,
 		showDriverAvailability: false,
+		driverAvailability: [],
 	},
 	reducers: {
 		insertBookings: (state, action) => {
@@ -52,6 +54,7 @@ const schedulerSlice = createSlice({
 			state.activeComplete = action.payload;
 		},
 		changeActiveDate: (state, action) => {
+			console.log(state.activeDate);
 			state.activeDate = new Date(action.payload).toISOString();
 		},
 		selectBookingFromScheduler: (state, action) => {
@@ -95,6 +98,9 @@ const schedulerSlice = createSlice({
 		},
 		setActiveSoftAllocate: (state, action) => {
 			state.activeSoftAllocate = action.payload;
+		},
+		setDriverAvailability: (state, action) => {
+			state.driverAvailability = action.payload;
 		},
 	},
 });
@@ -284,9 +290,47 @@ export const setActiveSearchResult = function (bookingId, activeTestMode) {
 	};
 };
 
+export function fetchDriverAvailabilityForDate(date) {
+	return async (dispatch, getState) => {
+		const isActiveTestMode = getState().bookingForm.isActiveTestMode;
+
+		try {
+			const response = await getDriverAvailability(date, isActiveTestMode);
+
+			if (response.status === 'success') {
+				// Extract all driver data from the response and filter based on availability
+				const allDrivers = Object.values(response);
+
+				// Filter available drivers (those with available hours)
+				const availableDrivers = allDrivers.filter(
+					(driver) => driver.availableHours.length > 0
+				);
+
+				// Filter unavailable drivers (those without available hours)
+				const unavailableDrivers = allDrivers.filter(
+					(driver) => driver.availableHours.length === 0
+				);
+
+				// Sort both groups alphabetically by fullName
+				availableDrivers.sort((a, b) => a.fullName.localeCompare(b.fullName));
+				unavailableDrivers.sort((a, b) => a.fullName.localeCompare(b.fullName));
+
+				// Combine available and unavailable drivers
+				const filteredDrivers = [...availableDrivers, ...unavailableDrivers];
+
+				// Dispatch the filtered driver availability to the Redux state
+				dispatch(schedulerSlice.actions.setDriverAvailability(filteredDrivers));
+			}
+		} catch (error) {
+			console.error('Error fetching driver availability:', error);
+		}
+	};
+}
+
 export const {
 	completeActiveBookingStatus,
 	changeActiveDate,
+	setDriverAvailability,
 	setActiveBookingIndex,
 	selectDriver,
 	makeSearchInactive,

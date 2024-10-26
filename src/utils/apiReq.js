@@ -137,8 +137,7 @@ async function handlePostReq(URL, data) {
 async function makeBooking(data, testMode = false) {
 	const URL = `${testMode ? TEST : TEST}/api/Bookings/Create`;
 	const filteredData = filterData(data);
-	console.log('filtered Data is coming', filteredData);
-	// const filteredData = data;
+	// console.log('filtered Data is coming', filteredData);
 	const res = await handlePostReq(URL, filteredData);
 	if (res.status === 'success')
 		sendLogs(
@@ -224,7 +223,6 @@ async function getAddressDetails(id) {
 	try {
 		const response = await axios.get(URL);
 		const data = response.data;
-		// console.log('getAddressDetails', data);
 
 		// Clean up formatted_address by filtering out empty or null values
 		const cleanedAddress = data.formatted_address
@@ -268,7 +266,7 @@ async function updateBooking(data, testMode = false) {
 	if (data.editBlock) {
 		filteredData = { ...filteredData, editBlock: data.editBlock };
 	}
-	
+
 	const res = await handlePostReq(URL, filteredData);
 	if (res.status === 'success')
 		sendLogs(

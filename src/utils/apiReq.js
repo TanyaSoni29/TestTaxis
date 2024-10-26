@@ -4,13 +4,7 @@ import axios from 'axios';
 import { formatDate } from './formatDate';
 import { sendLogs } from './getLogs';
 import { filterVias } from './filterVias';
-// const BASE = 'https://abacusonline-001-site1.atempurl.com';
-// const BASE = 'https://api.acetaxisdorset.co.uk';
-// const BASE = 'https://abacusonline-001-site1.atempurl.com';
-// const TEST = 'https://abacusonline-001-site1.atempurl.com';
-const TEST = 'https://dev.ace-api.1soft.co.uk';
-
-// https://api.getaddress.io/v2/uk/sp84aa?api-key=RCX7bLL_a0C5xaApbiBLFQ983
+const TEST = import.meta.env.VITE_BASE_URL;
 
 // utils function
 function convertDateString(inputDateString) {

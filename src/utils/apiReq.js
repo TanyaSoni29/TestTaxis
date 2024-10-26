@@ -268,8 +268,7 @@ async function updateBooking(data, testMode = false) {
 	if (data.editBlock) {
 		filteredData = { ...filteredData, editBlock: data.editBlock };
 	}
-
-	// console.log(filteredData);
+	
 	const res = await handlePostReq(URL, filteredData);
 	if (res.status === 'success')
 		sendLogs(

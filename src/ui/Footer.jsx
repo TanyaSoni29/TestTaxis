@@ -10,7 +10,6 @@ function Footer() {
 	// console.log('User', user);
 	const { showDriverAvailability } = useSelector((state) => state.scheduler);
 	const { isActiveTestMode } = useSelector((state) => state.bookingForm);
-	// const [notification, setNotification] = useState(false);
 	const dispatch = useDispatch();
 	const [time, setTime] = useState(new Date().toLocaleTimeString());
 	const [date, setDate] = useState(new Date().toDateString());

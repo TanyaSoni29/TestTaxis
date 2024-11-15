@@ -348,18 +348,23 @@ async function getAddressSuggestions(location) {
 	try {
 		// Step 1: Get autocomplete suggestions
 
-		const filter = {
-			radius: {
-				km: 10,
-			},
-			location: {
-				longitude: -2.2799,
-				latitude: 51.0388,
-			},
-		};
+		// const filter = {
+		// 	radius: {
+		// 		km: 10,
+		// 	},
+		// 	location: {
+		// 		longitude: -2.2799,
+		// 		latitude: 51.0388,
+		// 	},
+		// };
 		const autocompleteResponse = await axios.post(
 			`https://api.getAddress.io/autocomplete/${location}?api-key=${apiKey}`,
-			{ filter }
+			{
+				location: {
+					longitude: -2.2799,
+					latitude: 51.0388,
+				},
+			}
 		);
 		const suggestions = autocompleteResponse.data.suggestions;
 
